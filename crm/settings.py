@@ -75,11 +75,11 @@ WSGI_APPLICATION = 'crm.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dj_crm',
+        'NAME': 'crmdb',
         'USER': 'postgres',
-        'PASSWORD': 'root',
-        'HOST': os.getenv('DB_HOST', '127.0.0.1'),
-        'PORT': os.getenv('DB_PORT', '5432')
+        'PASSWORD': 'qwerty123',
+        'HOST': 'localhost',
+        'PORT': '5432'
     }
 }
 
@@ -130,9 +130,9 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # AUTHENTICATION_BACKENDS = ('django.contrib.auth.backends.ModelBackend', )
 
 
-EMAIL_HOST = 'smtp.sendgrid.net'
-EMAIL_HOST_USER = os.getenv('SG_USER', '')
-EMAIL_HOST_PASSWORD = os.getenv('SG_PWD', '')
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = os.getenv('SG_USER', 'suraj.pyd@gmail.com')
+EMAIL_HOST_PASSWORD = os.getenv('SG_PWD', 'knightsrj@$6383')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
@@ -140,48 +140,14 @@ AUTH_USER_MODEL = 'common.User'
 
 STORAGE_TYPE = os.getenv('STORAGE_TYPE', 'normal')
 
-if STORAGE_TYPE == 'normal':
-    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-    MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
 
-    STATIC_URL = '/static/'
-    STATICFILES_DIRS = (BASE_DIR + '/static',)
-    COMPRESS_ROOT = BASE_DIR + '/static/'
+STATIC_URL = '/static/'
+STATICFILES_DIRS = (BASE_DIR + '/static',)
+COMPRESS_ROOT = BASE_DIR + '/static/'
 
-elif STORAGE_TYPE == 's3-storage':
 
-    AWS_STORAGE_BUCKET_NAME = AWS_BUCKET_NAME = os.getenv('AWSBUCKETNAME', '')
-    AM_ACCESS_KEY = AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID', '')
-    AM_PASS_KEY = AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY', '')
-    S3_DOMAIN = AWS_S3_CUSTOM_DOMAIN = str(AWS_BUCKET_NAME) + '.s3.amazonaws.com'
-
-    AWS_S3_OBJECT_PARAMETERS = {
-        'CacheControl': 'max-age=86400',
-    }
-
-    STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-    DEFAULT_S3_PATH = "media"
-    STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-    STATIC_S3_PATH = "static"
-    COMPRESS_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-
-    COMPRESS_CSS_FILTERS = ['compressor.filters.css_default.CssAbsoluteFilter', 'compressor.filters.cssmin.CSSMinFilter']
-    COMPRESS_JS_FILTERS = ['compressor.filters.jsmin.JSMinFilter']
-    COMPRESS_REBUILD_TIMEOUT = 5400
-
-    MEDIA_ROOT = '/%s/' % DEFAULT_S3_PATH
-    MEDIA_URL = '//%s/%s/' % (S3_DOMAIN, DEFAULT_S3_PATH)
-    STATIC_ROOT = "/%s/" % STATIC_S3_PATH
-    STATIC_URL = 'https://%s/' % (S3_DOMAIN)
-    ADMIN_MEDIA_PREFIX = STATIC_URL + 'admin/'
-
-    CORS_ORIGIN_ALLOW_ALL = True
-
-    AWS_IS_GZIPPED = True
-    AWS_ENABLED = True
-    AWS_S3_SECURE_URLS = True
 
 COMPRESS_ROOT = BASE_DIR + '/static/'
 
@@ -214,7 +180,8 @@ COMPRESS_OFFLINE_CONTEXT = {
     'STATIC_URL': 'STATIC_URL',
 }
 
-DEFAULT_FROM_EMAIL = 'no-reply@django-crm.micropyramid.com'
+
+DEFAULT_FROM_EMAIL = 'suraj7.y@gmail.com'
 
 # celery Tasks
 CELERY_BROKER_URL = 'redis://localhost:6379'
@@ -254,9 +221,9 @@ SG_PWD = os.getenv('SG_PWD', '')
 
 MANDRILL_API_KEY = os.getenv('MANDRILL_API_KEY', '')
 
-ADMIN_EMAIL = "admin@micropyramid.com"
+ADMIN_EMAIL = "suraj7.y@gmail.com"
 
-URL_FOR_LINKS = "http://djangocrm.com"
+URL_FOR_LINKS = "http://sendan.com.sa/"
 
 try:
     from .dev_settings import *

@@ -1,0 +1,11 @@
+accounts
+cases
+common
+contacts
+crm
+docs
+emails
+leads
+marketing
+opportunity
+planner

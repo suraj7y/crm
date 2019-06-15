@@ -104,6 +104,20 @@
               </div>
               <div class="filter_col col-md-12">
                 <div class="form-group">
+                  <label for="exampleInputEmail1">Region{% if lead_form.region.field.required %}<span class="error">*</span>{% endif %}</label>
+                  {{ lead_form.region }}
+                  <span class="error error_message" id="error_id_region">{{ lead_form.region.errors }}</span>
+                </div>
+              </div>
+              <div class="filter_col col-md-12">
+                <div class="form-group">
+                  <label for="exampleInputEmail1">Pre Bid Status{% if lead_form.pre_bid_status.field.required %}<span class="error">*</span>{% endif %}</label>
+                  {{ lead_form.pre_bid_status }}
+                  <span class="error error_message" id="error_id_pre_bid_status">{{ lead_form.pre_bid_status.errors }}</span>
+                </div>
+              </div>
+              <div class="filter_col col-md-12">
+                <div class="form-group">
                   <label for="exampleInputEmail1" >Description{% if lead_form.description.field.required %}<span class="error">*</span>{% endif %}</label>
                   {{ lead_form.description }}
                   <span class="error error_message" id="error_id_description">{{ lead_form.description.errors }}</span>
@@ -135,6 +149,13 @@
                   <label for="exampleInputEmail1"/>Source{% if lead_form.source.field.required %}<span class="error">*</span>{% endif %}</label>
                   {{ lead_form.source }}
                   <span class="error error_message" id="error_id_source">{{ lead_form.source.errors }}</span>
+                </div>
+              </div>
+               <div class="filter_col col-md-12">
+                <div class="form-group">
+                  <label for="exampleInputEmail1"/>Department{% if lead_form.department.field.required %}<span class="error">*</span>{% endif %}</label>
+                  {{ lead_form.department }}
+                  <span class="error error_message" id="error_id_department">{{ lead_form.department.errors }}</span>
                 </div>
               </div>
               <div class="filter_col col-md-12">

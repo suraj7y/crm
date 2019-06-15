@@ -52,7 +52,15 @@ LEAD_STATUS = (
     ('in process', 'In Process'),
     ('converted', 'Converted'),
     ('recycled', 'Recycled'),
-    ('closed', 'Closed')
+    ('closed', 'Closed'),
+    ('A', 'Award (Last year bided job awarded in current year)'),
+    ('Ad', 'Awarded (Current year Bided job awarded)'),
+    ('D', 'Decline'),
+    ('H', 'Hold by Client'),
+    ('LC', 'Lost Commercialy'),
+    ('LT', 'Lost Technicaly'),
+    ('S', 'Submitted'),
+    ('UP', 'Under Preparation'),
 )
 
 
@@ -64,6 +72,34 @@ LEAD_SOURCE = (
     ('public relations', 'Public Relations'),
     ('compaign', 'Campaign'),
     ('other', 'Other'),
+)
+DEPT_NAME = (
+    ('BAS',    'Basees Sendan,'),
+    ('BT', 'Boting Department'),
+    ('CIVIL', 'Civil construction'),
+    ('CSD', 'Construction Services Department'),
+    ('E & I', 'Electrical & Instrumentation Construction'),
+    ('ETD', 'Equipment & Transport Department'),
+    ('HRS', 'Human Resource Services'),
+    ('HSE', 'Health, Safety & Envirnomnent (Pro Safe)'),
+    ('Mech', 'Mechanical Construction'),
+    ('PSD', 'Plant Servicse Department'),
+    ('RGSS', 'Redguard Specialist Services'),
+    ('SCF', 'Scaffolding Services'),
+    ('SP', 'Site Projects'),
+    ('TNC', 'Electrical Maintenance, Testing & Commissioning Services (SHOUAA)'),
+    ('TSD', 'Technical Services Division'),
+)
+
+REGION = (
+    ('C', 'Central'),
+    ('E', 'East'),
+    ('W', 'West'),
+)
+
+PRE_BID_STATUS = (
+    ('B', 'Budgetary'),
+    ('L', 'Live')
 )
 
 STATUS_CHOICE = (

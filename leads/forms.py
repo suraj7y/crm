@@ -55,7 +55,8 @@ class LeadForm(forms.ModelForm):
                   'phone', 'email', 'status', 'source',
                   'website', 'description',
                   'address_line', 'street',
-                  'city', 'state', 'postcode', 'country'
+                  'city', 'state', 'postcode', 'country', 'department', 'pre_bid_status',
+                  'region'
                   )
 
 

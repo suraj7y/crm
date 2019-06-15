@@ -4,7 +4,7 @@ from django.utils.translation import ugettext_lazy as _
 
 from common.models import User
 from common.utils import (LEAD_STATUS, LEAD_SOURCE,
-                          COUNTRIES, return_complete_address)
+                          COUNTRIES, return_complete_address, DEPT_NAME, PRE_BID_STATUS,REGION)
 from phonenumber_field.modelfields import PhoneNumberField
 from accounts.models import Tags
 from contacts.models import Contact
@@ -53,6 +53,15 @@ class Lead(models.Model):
     enquery_type = models.CharField(max_length=255, blank=True, null=True)
     tags = models.ManyToManyField(Tags, blank=True)
     contacts = models.ManyToManyField(Contact, related_name="lead_contacts")
+    department = models.CharField(
+        _("dept of Lead"), max_length=255,
+        blank=True, null=True, choices=DEPT_NAME)
+    pre_bid_status = models.CharField(
+        _("pre_bid_status"), max_length=255,
+        blank=True, null=True, choices=PRE_BID_STATUS)
+    region = models.CharField(
+        _("region"), max_length=255,
+        blank=True, null=True, choices=REGION)
 
     class Meta:
         ordering = ['-created_on']
