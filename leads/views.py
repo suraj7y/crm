@@ -16,7 +16,7 @@ from common.models import User, Comment, Attachments, APISettings
 from common.utils import LEAD_STATUS, LEAD_SOURCE, COUNTRIES
 from common import status
 from contacts.models import Contact
-from leads.models import Lead
+from leads.models import Lead, Department
 from leads.forms import LeadCommentForm, LeadForm, LeadAttachmentForm
 from planner.models import Event, Reminder
 from planner.forms import ReminderForm
@@ -103,10 +103,11 @@ class LeadListView(LoginRequiredMixin, TemplateView):
 def create_lead(request):
     template_name = "create_lead.html"
     users = User.objects.filter(is_active=True).order_by('email')
-    form = LeadForm(assigned_to=users)
+    department = Department.objects.all()
+    form = LeadForm(assigned_to=users,department=department)
 
     if request.POST:
-        form = LeadForm(request.POST, request.FILES, assigned_to=users)
+        form = LeadForm(request.POST, request.FILES, assigned_to=users, department=department)
         if form.is_valid():
             lead_obj = form.save(commit=False)
             lead_obj.created_by = request.user
@@ -123,6 +124,9 @@ def create_lead(request):
                     lead_obj.tags.add(tag)
             if request.POST.getlist('assigned_to', []):
                 lead_obj.assigned_to.add(*request.POST.getlist('assigned_to'))
+                print(*request.POST.getlist('assigned_to'))
+                print(*request.POST.getlist('department'))
+                lead_obj.department.add(*request.POST.getlist('department'))
                 assigned_to_list = request.POST.getlist('assigned_to')
                 current_site = get_current_site(request)
                 for assigned_to_user in assigned_to_list:
@@ -168,6 +172,7 @@ def create_lead(request):
                 if request.POST.getlist('assigned_to', []):
                     # account_object.assigned_to.add(*request.POST.getlist('assigned_to'))
                     assigned_to_list = request.POST.getlist('assigned_to')
+                    department_list = request.POST.getlist('department')
                     current_site = get_current_site(request)
                     for assigned_to_user in assigned_to_list:
                         user = get_object_or_404(User, pk=assigned_to_user)
@@ -194,10 +199,13 @@ def create_lead(request):
     context["lead_form"] = form
     context["accounts"] = Account.objects.filter(status="open")
     context["users"] = users
+    context['department'] = Department.objects.all()
     context["countries"] = COUNTRIES
     context["status"] = LEAD_STATUS
     context["source"] = LEAD_SOURCE
-    context["assignedto_list"] = [
+    context["department_list"] = [
+        int(i) for i in request.POST.getlist('department', []) if i]
+    context["department_list"] = [
         int(i) for i in request.POST.getlist('assigned_to', []) if i]
 
     return render(request, template_name, context)
@@ -654,3 +662,6 @@ def create_lead_from_site(request):
     return JsonResponse({
         'error': True, 'message': "In-valid request method."},
         status=status.HTTP_400_BAD_REQUEST)
+
+
+

@@ -857,3 +857,71 @@ def google_login(request):
         + 'http://' + request.META['HTTP_HOST'] + \
         reverse('common:google_login') + "&state=" + next_url
     return HttpResponseRedirect(rty)
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.http import Http404
+from .serializers import UserInfoSerializer
+from django.db import IntegrityError
+
+
+class UserViewSet(APIView):
+
+    def get(self, request, id=None):
+        if id == None:
+            queryset = User.objects.all()
+        else:
+            queryset = User.objects.filter(id=id)
+
+        serializer_class = UserInfoSerializer(queryset, many=True)
+        return Response(serializer_class.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        form = request.data
+        password = form.get('password')
+        username = form.get('username')
+        first_name = form.get('first_name')
+        last_name = form.get('last_name')
+        email = form.get('email')
+        role = form.get('role')
+        profile_pic = form.get('profile_pic')
+
+        try:
+            qs=User.objects.create_user(username=username, password=password, first_name=first_name, last_name=last_name
+                            , email=email, role=role)
+            serializer_class = UserInfoSerializer(qs)
+            data = serializer_class.data
+            data['success'] = True
+            print(data)
+            return Response(data, status=status.HTTP_200_OK)
+        except IntegrityError as e:
+            print(e)
+
+            return Response({'success': False, 'message': 'user already exists'}, status=status.HTTP_409_CONFLICT)
+
+
+from collections import ChainMap
+
+
+class LoginViewSet(APIView):
+
+    def post(self, request):
+        form = request.data
+        email = form.get('email')
+        password = form.get('password')
+        user = authenticate(email=email, password=password)
+        if user is not None:
+            if user.is_active:
+                qs = User.objects.filter(email=email).values('username', 'first_name', 'last_name', 'email', 'role')
+                data = dict(ChainMap(*qs))
+                data['success'] = True
+                print(data)
+                return Response(data, status=status.HTTP_200_OK)
+        else:
+            return Response({'success': False}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+
+

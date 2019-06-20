@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'phonenumber_field',
     'storages',
     'marketing',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -82,6 +83,11 @@ DATABASES = {
         'PORT': '5432'
     }
 }
+
+REST_FRAMEWORK = {
+        'DEFAULT_AUTHENTICATION_CLASSES': (
+             'rest_framework.authentication.BasicAuthentication',
+        )}
 
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"), ]
 

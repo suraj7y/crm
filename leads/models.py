@@ -10,6 +10,14 @@ from accounts.models import Tags
 from contacts.models import Contact
 
 
+class Department(models.Model):
+    code = models.CharField(max_length=100, null=True)
+    name = models.CharField(max_length=100, null=True)
+
+    def __str__(self):
+        return self.name
+
+
 class Lead(models.Model):
     title = models.CharField(
         pgettext_lazy("Treatment Pronouns for the customer",
@@ -53,9 +61,8 @@ class Lead(models.Model):
     enquery_type = models.CharField(max_length=255, blank=True, null=True)
     tags = models.ManyToManyField(Tags, blank=True)
     contacts = models.ManyToManyField(Contact, related_name="lead_contacts")
-    department = models.CharField(
-        _("dept of Lead"), max_length=255,
-        blank=True, null=True, choices=DEPT_NAME)
+    department =models.ManyToManyField(
+        Department, related_name='department')
     pre_bid_status = models.CharField(
         _("pre_bid_status"), max_length=255,
         blank=True, null=True, choices=PRE_BID_STATUS)

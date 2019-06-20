@@ -7,6 +7,7 @@ class LeadForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         assigned_users = kwargs.pop('assigned_to', [])
+        department_to = kwargs.pop('department', [])
         super(LeadForm, self).__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs = {"class": "form-control"}
@@ -15,6 +16,8 @@ class LeadForm(forms.ModelForm):
             self.fields['email'].required = True
         self.fields['assigned_to'].queryset = assigned_users
         self.fields['assigned_to'].required = False
+        self.fields['department'].queryset = department_to
+        self.fields['department'].required = False
         self.fields['first_name'].required = False
         self.fields['last_name'].required = False
         self.fields['title'].required = True

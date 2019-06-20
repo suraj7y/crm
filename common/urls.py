@@ -12,7 +12,7 @@ from common.views import (
     add_comment, edit_comment, remove_comment,
     api_settings, add_api_settings, view_api_settings,
     update_api_settings, delete_api_settings,
-    change_passsword_by_admin, google_login
+    change_passsword_by_admin, google_login, UserViewSet, LoginViewSet
 )
 from django.conf.urls.static import static
 from django.conf import settings
@@ -87,6 +87,9 @@ urlpatterns = [
     path('change-password-by-admin/', change_passsword_by_admin,
          name="change_passsword_by_admin"),
     path('google/login/', google_login, name="google_login"),
+    path('user_detail/<int:id>/', UserViewSet.as_view(), name='user_detail'),
+    path('user_detail/', UserViewSet.as_view(), name='user_detail'),
+    path('login_api/', LoginViewSet.as_view(), name='login_api'),
 
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

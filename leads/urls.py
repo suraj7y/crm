@@ -32,4 +32,5 @@ urlpatterns = [
          AddAttachmentsView.as_view(), name="add_attachment"),
     path('attachment/remove/', DeleteAttachmentsView.as_view(),
          name="remove_attachment"),
+
 ]

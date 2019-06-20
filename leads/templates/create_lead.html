@@ -93,6 +93,17 @@
                   <span class="error"></span>
                 </div>
               </div>
+              <div class="filter_col col-md-12">
+                <div class="form-group">
+                  <label for="exampleInputEmail1"/>Activity Involve<span class="error">*</span></label>
+                  <select class="assigned_users form-control" name="department" multiple="multiple">
+                  {% for departments in department %}
+                  <option value="{{departments.id}}" {% if user in lead_obj.department.all or user.id in department_list %} selected="" {% endif %}>{{departments.name}}</option>
+                  {% endfor %}
+                  </select>
+                  <span class="error error_message" id="error_id_department">{{ lead_form.department.errors }}</span>
+                </div>
+              </div>
             </div>
             <div class="col-md-4">
               <div class="filter_col col-md-12">
@@ -153,8 +164,12 @@
               </div>
                <div class="filter_col col-md-12">
                 <div class="form-group">
-                  <label for="exampleInputEmail1"/>Department{% if lead_form.department.field.required %}<span class="error">*</span>{% endif %}</label>
-                  {{ lead_form.department }}
+                  <label for="exampleInputEmail1"/>Department<span class="error">*</span></label>
+                  <select class="assigned_users form-control" name="department" multiple="multiple">
+                  {% for departments in department %}
+                  <option value="{{departments.id}}" {% if user in lead_obj.department.all or user.id in department_list %} selected="" {% endif %}>{{departments.name}}</option>
+                  {% endfor %}
+                  </select>
                   <span class="error error_message" id="error_id_department">{{ lead_form.department.errors }}</span>
                 </div>
               </div>
