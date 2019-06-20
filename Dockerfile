@@ -33,7 +33,7 @@ ENV LANG C.UTF-8
 
 ENV LC_ALL C.UTF-8
 
-EXPOSE 80
+EXPOSE 9095
 
 COPY deploy/django_nginx.conf /etc/nginx/sites-available/
 

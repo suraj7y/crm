@@ -8,7 +8,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'mwx@&97%!$fx_*zgj(2ygi^(s=oh5j(cqb$=+-mkd9scbt!0v0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -78,8 +78,9 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'crmdb',
         'USER': 'postgres',
-        'PASSWORD': 'qwerty123',
-        'HOST': 'localhost',
+        'PASSWORD': 'S$dN49gW@7',
+        #'PASSWORD': 'qwerty123',
+        'HOST': '192.168.1.2',
         'PORT': '5432'
     }
 }
@@ -146,16 +147,16 @@ AUTH_USER_MODEL = 'common.User'
 
 STORAGE_TYPE = os.getenv('STORAGE_TYPE', 'normal')
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+if STORAGE_TYPE == 'normal':
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+    MEDIA_URL = '/media/'
+    STATIC_URL = '/static/'
+    STATICFILES_DIRS = (BASE_DIR + '/static',)
+    STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+    COMPRESS_ROOT = BASE_DIR + '/static/'
 
-STATIC_URL = '/static/'
-STATICFILES_DIRS = (BASE_DIR + '/static',)
-COMPRESS_ROOT = BASE_DIR + '/static/'
 
 
-
-COMPRESS_ROOT = BASE_DIR + '/static/'
 
 COMPRESS_ENABLED = True
 
