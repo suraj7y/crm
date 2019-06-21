@@ -263,6 +263,8 @@ def update_lead(request, pk):
     lead_record = Lead.objects.filter(pk=pk).first()
     template_name = "create_lead.html"
     users = User.objects.filter(is_active=True).order_by('email')
+    department = Department.objects.all()
+
     status = request.GET.get('status', None)
     initial = {}
     if status and status == "converted":
@@ -271,12 +273,12 @@ def update_lead(request, pk):
         initial.update({
             "status": status, "lead": lead_record.id})
     error = ""
-    form = LeadForm(instance=lead_record, initial=initial, assigned_to=users)
+    form = LeadForm(instance=lead_record, initial=initial, assigned_to=users , department=department)
 
     if request.POST:
         form = LeadForm(request.POST, request.FILES,
                         instance=lead_record,
-                        initial=initial, assigned_to=users)
+                        initial=initial, assigned_to=users,department=department)
 
         if request.POST.get('status') == "converted":
             form.fields['account_name'].required = True
@@ -329,6 +331,8 @@ def update_lead(request, pk):
 
                 lead_obj.assigned_to.clear()
                 lead_obj.assigned_to.add(*request.POST.getlist('assigned_to'))
+                lead_obj.department.clear()
+                lead_obj.department.add(*request.POST.getlist('department'))
             else:
                 lead_obj.assigned_to.clear()
 
@@ -396,10 +400,13 @@ def update_lead(request, pk):
     context["lead_form"] = form
     context["accounts"] = Account.objects.filter(status="open")
     context["users"] = users
+    context['department'] = Department.objects.all()
     context["countries"] = COUNTRIES
     context["status"] = LEAD_STATUS
     context["source"] = LEAD_SOURCE
     context["error"] = error
+    context["department_list"] = [
+        int(i) for i in request.POST.getlist('department', []) if i]
     context["assignedto_list"] = [
         int(i) for i in request.POST.getlist('assigned_to', []) if i]
 

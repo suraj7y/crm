@@ -167,7 +167,7 @@
                   <label for="exampleInputEmail1"/>Department<span class="error">*</span></label>
                   <select class="assigned_users form-control" name="department" multiple="multiple">
                   {% for departments in department %}
-                  <option value="{{departments.id}}" {% if user in lead_obj.department.all or user.id in department_list %} selected="" {% endif %}>{{departments.name}}</option>
+                  <option value="{{departments.id}}" {% if departments in lead_obj.department.all or departments.id in department_list %} selected="" {% endif %}>{{departments.name}}</option>
                   {% endfor %}
                   </select>
                   <span class="error error_message" id="error_id_department">{{ lead_form.department.errors }}</span>

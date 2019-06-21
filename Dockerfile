@@ -27,7 +27,7 @@ COPY . .
 
   RUN python3 manage.py collectstatic  --noinput
 
-  pip3 install --no-cache-dir redis
+  RUN pip3 install --no-cache-dir redis
 
 ENV LANG C.UTF-8
 
