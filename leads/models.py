@@ -60,7 +60,7 @@ class Lead(models.Model):
     is_active = models.BooleanField(default=False)
     enquery_type = models.CharField(max_length=255, blank=True, null=True)
     tags = models.ManyToManyField(Tags, blank=True)
-    contacts = models.ManyToManyField(Contact, related_name="lead_contacts")
+    contacts = models.ManyToManyField(Contact, related_name="lead_contacts", blank=True)
     department =models.ManyToManyField(
         Department, related_name='department')
     pre_bid_status = models.CharField(

@@ -899,7 +899,7 @@ class UserViewSet(APIView):
         except IntegrityError as e:
             print(e)
 
-            return Response({'success': False, 'message': 'user already exists'}, status=status.HTTP_409_CONFLICT)
+            return Response({'success': False, 'message': 'user_already_exists'}, status=status.HTTP_409_CONFLICT)
 
 
 from collections import ChainMap
@@ -920,7 +920,7 @@ class LoginViewSet(APIView):
                 print(data)
                 return Response(data, status=status.HTTP_200_OK)
         else:
-            return Response({'success': False}, status=status.HTTP_401_UNAUTHORIZED)
+            return Response({'success': False, 'message': "invalid_user"}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 

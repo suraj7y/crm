@@ -18,6 +18,9 @@ from common import status
 from contacts.models import Contact
 from leads.models import Lead, Department
 from leads.forms import LeadCommentForm, LeadForm, LeadAttachmentForm
+from leads.serializers import DepartmentInfoSerializer, MixInfoSerialize, DashboardSerializer, AccountInfoSerializer, \
+    AccountPageDataSerializer, ContactInfoSerializer, OpportunityInfoSerializer
+from opportunity.models import Opportunity
 from planner.models import Event, Reminder
 from planner.forms import ReminderForm
 from leads.tasks import send_lead_assigned_emails
@@ -670,5 +673,249 @@ def create_lead_from_site(request):
         'error': True, 'message': "In-valid request method."},
         status=status.HTTP_400_BAD_REQUEST)
 
+####################################################################################################################
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from django.http import Http404
+from .serializers import LeadInfoSerializer
+from django.db import IntegrityError
+from collections import namedtuple
 
 
+class LeadViewSet(APIView):
+
+    def get(self, request, id=None):
+        data1 = []
+        if id == None:
+            queryset = Lead.objects.all()
+        else:
+            queryset = Lead.objects.filter(id=id)
+        serializer_class = LeadInfoSerializer(queryset, many=True)
+        data2 = serializer_class.data
+        return Response(serializer_class.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        users = User.objects.filter(is_active=True).order_by('email')
+        department = Department.objects.all()
+        assigned_to_list = request.data.getlist('assigned_to')
+        print(assigned_to_list)
+        #form = LeadForm(assigned_to=users, department=department)
+        serializer = LeadInfoSerializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            data = serializer.data
+            assigned_to_list = request.data.getlist('assigned_to')
+            print(assigned_to_list)
+
+            assigned_to_list = request.data.getlist('assigned_to')
+            current_site = get_current_site(request)
+            for assigned_to_user in assigned_to_list:
+                    user = get_object_or_404(User, pk=assigned_to_user)
+                    mail_subject = 'Assigned to lead.'
+                    message = render_to_string(
+                             'assigned_to/leads_assigned.html', {
+                                 'user': user,
+                                 'domain': current_site.domain,
+                                 'protocol': request.scheme,
+                                 'lead': serializer.data
+
+                             })
+                    email = EmailMessage(
+                             mail_subject, message, to=[user.email])
+                    email.content_subtype = "html"
+                    email.send()
+            data['success'] = True
+            return Response(data, status=status.HTTP_200_OK)
+
+        except:
+
+            return Response({'success': False, 'message': 'failed'}, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, id):
+        instance = get_object_or_404(Lead.objects.all(), id=id)
+        serializer = LeadInfoSerializer(instance, data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            data = serializer.data
+            data['success'] = True
+            data['message'] = 'updated'
+            return Response(data, status=status.HTTP_200_OK)
+        except:
+            return Response({'success': False, 'message': 'failed'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LeadDataApi(APIView):
+
+    def get(self, request):
+        Timeline = namedtuple('Timeline', ('departments', 'user'))
+        timeline = Timeline(
+            departments=Department.objects.all(),
+            user=User.objects.all(),
+        )
+        serializer_class = MixInfoSerialize(timeline)
+        return Response(serializer_class.data, status=status.HTTP_200_OK)
+
+
+class DashboardApi(APIView):
+
+    def get(self, request):
+        Timeline = namedtuple('Timeline', ('opportunity', 'account'))
+        timeline = Timeline(
+            opportunity=Opportunity.objects.all(),
+            account=Account.objects.all(),
+
+        )
+        serializer_class = DashboardSerializer(timeline)
+        #print(serializer_class.data)
+        return Response(serializer_class.data, status=status.HTTP_200_OK)
+
+
+class AccountApi(APIView):
+    def get(self, request, id=None):
+        data1 = []
+        if id == None:
+            queryset = Account.objects.all()
+        else:
+            queryset = Account.objects.filter(id=id)
+        serializer_class = AccountInfoSerializer(queryset, many=True)
+        data2 = serializer_class.data
+        return Response(serializer_class.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        users = User.objects.filter(is_active=True).order_by('email')
+        department = Department.objects.all()
+
+        serializer = AccountInfoSerializer(data=request.data)
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        data = serializer.data
+
+        data['success'] = True
+        return Response(data, status=status.HTTP_200_OK)
+
+    def put(self, request, id):
+        instance = get_object_or_404(Account.objects.all(), id=id)
+        serializer = AccountInfoSerializer(instance, data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            data = serializer.data
+            data['success'] = True
+            data['message'] = 'updated'
+            return Response(data, status=status.HTTP_200_OK)
+        except:
+            return Response({'success': False, 'message': 'failed'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AccountPageApi(APIView):
+
+    def get(self, request):
+        Timeline = namedtuple('Timeline', ('lead', 'contact'))
+        timeline = Timeline(
+            lead=Lead.objects.all(),
+            contact=Contact.objects.all(),
+
+        )
+        serializer_class = AccountPageDataSerializer(timeline)
+        #print(serializer_class.data)
+        return Response(serializer_class.data, status=status.HTTP_200_OK)
+
+
+class ContactViewSet(APIView):
+
+    def get(self, request, id=None):
+        data1 = []
+        if id == None:
+            queryset = Contact.objects.all()
+        else:
+            queryset = Contact.objects.filter(id=id)
+        serializer_class = ContactInfoSerializer(queryset, many=True)
+        data2 = serializer_class.data
+        return Response(serializer_class.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        users = User.objects.filter(is_active=True).order_by('email')
+        department = Department.objects.all()
+
+        serializer = ContactInfoSerializer(data=request.data)
+
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        data = serializer.data
+
+        data['success'] = True
+        return Response(data, status=status.HTTP_200_OK)
+
+    def put(self, request, id):
+        instance = get_object_or_404(Contact.objects.all(), id=id)
+        serializer = ContactInfoSerializer(instance, data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            data = serializer.data
+            data['success'] = True
+            data['message'] = 'updated'
+            return Response(data, status=status.HTTP_200_OK)
+        except:
+            return Response({'success': False, 'message': 'failed'}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class OpportunityApiview(APIView):
+
+    def get(self, request, id=None):
+        data1 = []
+        if id == None:
+            queryset = Opportunity.objects.all()
+        else:
+            queryset = Opportunity.objects.filter(id=id)
+        serializer_class = OpportunityInfoSerializer(queryset, many=True)
+        data2 = serializer_class.data
+        return Response(serializer_class.data, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        users = User.objects.filter(is_active=True).order_by('email')
+        department = Department.objects.all()
+
+        serializer = OpportunityInfoSerializer(data=request.data)
+
+
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        data = serializer.data
+        assigned_to_list = request.data.getlist('assigned_to')
+        current_site = get_current_site(request)
+        for assigned_to_user in assigned_to_list:
+            user = get_object_or_404(User, pk=assigned_to_user)
+            mail_subject = 'Assigned to opportunity.'
+            message = render_to_string(
+                'assigned_to/opportunity_assigned.html', {
+                    'user': user,
+                    'domain': current_site.domain,
+                    'protocol': request.scheme,
+                    'opportunity': serializer.data
+                })
+            email = EmailMessage(
+                mail_subject, message, to=[user.email])
+            email.content_subtype = "html"
+            email.send()
+
+        data['success'] = True
+        return Response(data, status=status.HTTP_200_OK)
+
+    def put(self, request, id):
+        instance = get_object_or_404(Opportunity.objects.all(), id=id)
+        serializer = OpportunityInfoSerializer(instance, data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+            serializer.save()
+            data = serializer.data
+            data['success'] = True
+            data['message'] = 'updated'
+            return Response(data, status=status.HTTP_200_OK)
+        except:
+            return Response({'success': False, 'message': 'failed'}, status=status.HTTP_400_BAD_REQUEST)
